@@ -1,0 +1,16 @@
+﻿//从控制台获取输入并储存到变量
+var input = Console.ReadLine();
+
+//输出这个变量
+Console.WriteLine("你输入的是:" + input);
+
+//为变量重新赋值
+input = input + "123";
+
+//声明另一个变量
+var passworld = Console.ReadLine();
+
+var result = input == passworld;
+Console.WriteLine("你的第二次输入是第一次输入加上123：" + result);
+//也可以直接写Console.WriteLine("你的第二次输入是第一次输入加上123："+(input == passworld));
+
