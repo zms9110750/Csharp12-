@@ -1,0 +1,98 @@
+﻿#region 自赋值语句
+
+using System.Xml.Linq;
+
+int a = 10;
+a += 20;
+a *= 30;
+#endregion
+
+#region 递增，递减
+
+int i = 10;
+i--;
+Console.WriteLine(i++);
+Console.WriteLine(i);
+Console.WriteLine(++i);
+
+int i2 = --i + i++;
+Console.WriteLine(i2);
+#endregion
+#region 三元运算
+
+int num = 9;
+string s = num % 2 == 0 ? "偶数" : "奇数";
+Console.WriteLine(s);
+
+
+//可以多次使用
+int r = Random.Shared.Next(100);
+var s2 = r > 98 ? "评分SS"
+	: r > 95 ? "评分S"
+	: r > 90 ? "评分A"
+	: r > 80 ? "评分B"
+	: "不通过";
+
+//如果还有其他运算，用括号包围。否则不确定其他运算是不是包含进条件部分或候选项
+string s3 = 12 + (num % 2 == 0 ? "偶数" : "奇数") + "（正数）";
+string s4 = 12 + num % 2 == 0 ? "偶数" : "奇数" + "（正数）";
+#endregion
+#region switch表达式
+int r2 = Random.Shared.Next(100);
+var s5 = r2 switch
+{
+	> 98 => "评分SS",
+	> 95 => "评分S",
+	> 90 => "评分A",
+	> 80 => "评分B",
+	_ => "不通过"
+};
+var s6 = true switch
+{
+	true when r2 > 98 => "评分SS",
+	true when r2 > 95 => "评分S",
+	true when r2 > 90 => "评分A",
+	true when r2 > 80 => "评分B",
+	_ => "不通过"
+};
+#endregion
+#region 舍弃
+int b = 1, c = 2, d = 3;
+_ = b > 0 ? c++ : d++;
+
+#endregion
+
+#region 插值字符串
+string name1 = "小明";
+int age1 = 12;
+Console.WriteLine($"名字是:{name1}，年龄是{age1}");
+Console.WriteLine($$$"""名字是:{{{name1}}}，年龄是{{{age1}}}""");
+#endregion
+
+#region 空格占位
+Console.WriteLine($"123456789012345678901234567890");
+Console.WriteLine($"12|{456,6}0|23456789|{123,-7}|90");
+#endregion
+
+#region 格式说明符
+double e = 12.123456;
+int f = 285;
+Console.WriteLine($"{f:d5}");//00285，以前导0补足指定数量的数字
+Console.WriteLine($"{f:x}");//11d，以16进制显示。字母部分的大小写取决于说明符的大小写
+Console.WriteLine($"{d:f3}");//12.123，指定小数位数,会四舍五入或补0来达到指定位数
+Console.WriteLine($"{d:e2}");//1.21e+001，科学计数法显示，e后面的数字即小数点后的有效数字，四舍五入
+#endregion
+
+#region 运算顺序
+Console.WriteLine(true || true && false);   //True
+Console.WriteLine((true || true) && false); //False
+
+//先由一堆整数进行除法操作。 最后与一个浮点数运算。这样也不会保留之前的余数。
+Console.WriteLine(90 / 20 / 3 / 2.0);//0.5
+Console.WriteLine(90 * 1.0 / 20 / 3 / 2.0);//0.75
+
+//几个数字类型进行计算，然后和字符串相加，得到的结果是数学运算后的结果。
+Console.WriteLine(1 + 1 + 1 + 1 + "1");//41
+Console.WriteLine(1 + 1 + "1" + (1 + 1));//212
+Console.WriteLine(1 + 1 + "1" + 1 + 1);//2111
+#endregion

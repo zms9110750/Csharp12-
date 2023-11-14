@@ -1,0 +1,25 @@
+﻿//引用类型的串号
+int[] a = new int[1];
+int[] b = a;
+a[0] = 12;
+Console.WriteLine(b[0]);
+
+//引用类型的比较
+b = new int[1];
+b[0] = a[0];
+Console.WriteLine(a == b);
+//字符串不在此列。字符串即便使用new构建，也会使用同一份字符串。这是.Net从底层进行的优化
+
+//引用变量
+ref int p = ref a[0];
+Console.WriteLine(a[0]);
+p = 666;
+Console.WriteLine(a[0]);
+
+ref int Hello()//方法也可以返回引用变量类型
+{
+	return ref b[0];
+}
+
+int c = Hello();
+ref int d = ref Hello();//方法返回引用变量时，接收者可以选择性的使用引用或不使用引用接收。
