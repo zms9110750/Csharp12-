@@ -1,0 +1,61 @@
+﻿
+
+#region 使用记录
+Student student = new Student("小明", 12);//构造器
+student = new Student("", 0) { Name = "小刚" };//对象初始化器
+Student st = student with { Name = "小丽" };//克隆对象初始化器
+
+#endregion
+
+
+
+#region 声明记录 
+record Student(string Name, int Age)
+{
+	int Hp { get; set; } =100;//自动属性，并赋值初始值
+	int Atk => Age * 2;//只读属性
+
+	#region 有逻辑的完整属性 
+	int def;
+	int Def
+	{
+		get => Math.Max(0, def);
+		set
+		{
+			if (value < 0)
+			{
+				Console.WriteLine("你使用的数值好像不太对，给你纠正过来了");
+				def = -value;
+			}
+			else
+			{
+				def = value;
+			}
+		}
+	}
+	#endregion
+	#region 索引器
+	int[] arr = [1, 2, 3, 4];
+	int this[int index] { get => arr[index]; set => arr[index] = value; }
+	int this[int a, int b] => arr[a - b];
+	#endregion
+	#region 普通构造器
+	Student(string Name) : this(Name, Name.Length)//构造器链
+	{
+	}
+	#endregion
+	#region 终结器
+	~Student()
+	{
+		Console.WriteLine("被当作垃圾清理掉了");
+	}
+	#endregion
+	#region 方法重载
+	void Hello() { }//数量不一样
+	void Hello(int age) { }
+	void Hello(string name) { }//类型不一样
+	void Hello(ref int age) { }//引用参数和普通参数类型不一样
+	#endregion
+}
+#endregion
+

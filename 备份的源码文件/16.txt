@@ -1,0 +1,128 @@
+﻿ 
+#region 声明参数
+
+int Max1(int i1, int i2, int i3)
+{
+	if (i1 > i2)
+	{
+		return i1 > i3 ? i1 : i3;
+	}
+	else
+	{
+		return i2 > i3 ? i2 : i3;
+	}
+}
+
+int i4 = Max1(9, 6, 8);
+Console.WriteLine(i4);//9
+#endregion
+ 
+#region 捕获与隔离
+
+int a = 10;
+int b = 12;
+void Hello(int a)
+{
+	a = 14;
+	b = 16;
+}
+#endregion
+#region 可选参数
+
+void Random2(int max = 100, int critical = 20)
+{
+	if (Random.Shared.Next(max) < critical)
+	{
+		Console.WriteLine("暴击");
+	}
+	else
+	{
+		Console.WriteLine("没有暴击");
+	}
+}
+Random2();
+Random2(40);
+Random2(1000, 800);
+#endregion
+#region 不定长参数
+int Min1(params int[] arr)
+{
+	if (arr.Length == 0)
+		return 0;
+	int min = arr[0];
+	for (int i = 1; i < arr.Length; i++)
+	{
+		if (min < arr[i])
+			min = arr[i];
+	}
+	return min;
+}
+Min1();
+Min1(1);
+Min1(6, 9);
+Min1(8, 4, 2);
+#endregion
+#region 命名参数
+Hello4(b: 8, a: 9, d: 10);//输出9,8,6,10
+
+void Hello4(int a, int b, int c = 6, int d = 40)
+{
+	Console.WriteLine(a);
+	Console.WriteLine(b);
+	Console.WriteLine(c);
+	Console.WriteLine(d);
+}
+#endregion
+#region 引用参数
+void Hello5(ref int i)
+{
+	i *= 2;
+}
+int i7 = 10;
+Hello5(ref i7);
+Console.WriteLine(i7);//20
+
+//out参数
+if (int.TryParse("123", out var input))
+{
+	Console.WriteLine(input * input);
+}
+else
+{
+	Console.WriteLine("输入不合法");
+}
+#endregion
+
+#region 可空值类型
+int Random3(int max = 100, int? min = null)
+{
+	if (min == null)
+		return Random.Shared.Next(max);
+	else
+		return Random.Shared.Next(min.Value, max);
+}
+#endregion
+
+#region 空传播
+string[]? arr1 = null;
+string? s2 = arr1?[0];//不会阻止索引越界
+int? i8 = s2?.Length;
+var i9 = arr1?[0].Length;//只要arr1是null，后面的.Length也不会执行
+
+
+int? i10 = 2;
+var s3 = i10.Value.ToString();
+var s4 = i10?.ToString();
+#endregion
+
+#region 空合并
+string s6 = null;
+int i11 = s6?.Length ?? -1;
+s6 ??= "hello";
+
+int Random4(Random? random = null)
+{
+	random ??= Random.Shared;
+	return random.Next(100);
+}
+#endregion

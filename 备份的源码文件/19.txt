@@ -1,0 +1,8 @@
+﻿record Lottery(int Count)
+{
+	int extractCount = 0;//对外部隐藏这个变量。如果任意修改，则可达到永远抽不到true。或永远为true
+	public bool Extract()
+	{
+		return extractCount % Count == 0;
+	}
+}

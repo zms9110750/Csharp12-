@@ -1,0 +1,53 @@
+﻿using A.B.C;
+
+#region 记录和类的赋值都是复制指针
+Record record1 = new Record("小明", 12);
+Record record2 = record1;
+
+Console.WriteLine(record2.Name);
+record1.Name = "小刚";
+Console.WriteLine(record2.Name);
+
+Console.WriteLine("====串号====");
+Class class1 = new Class("小明", 12);
+Class class2 = class1;
+
+Console.WriteLine(class2.Name);
+class1.Name = "小刚";
+Console.WriteLine(class2.Name);
+#endregion
+
+#region 两者的输出
+Console.WriteLine("====输出===");
+Console.WriteLine(record1);//输出类型名，和主构造器里的值
+Console.WriteLine(class1);//输出完全限定名 
+#endregion
+
+#region 解构
+var (name, age) = ("小明", 12);//元组解构
+
+(name, age) = record1;//记录解构
+(name, age) = class1;//类解构
+#endregion
+
+namespace A.B.C
+{
+	record Record(string Name, int Age)
+	{
+		public Record(string Name, Record other) : this(other)//有一个自动合成的，参数为自己的构造器
+		{
+			this.Name = Name;
+		}
+		public string Name { get; set; } = Name;
+	}
+	class Class(string Name, int Age)
+	{
+		public string Name { get; set; } = Name;
+		public void Deconstruct(out string name, out int age)
+		{
+			name = Name;
+			age = Age;
+		}
+	}
+}
+
