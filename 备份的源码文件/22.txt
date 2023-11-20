@@ -1,0 +1,77 @@
+﻿
+#region 自动合成的无参构造器不会经过初始值赋值
+Console.WriteLine("自动合成的无参构造器不会经过初始值赋值");
+MyStruct my = new MyStruct();
+Console.WriteLine(my.Age);
+#endregion
+
+#region 从方法返回的结构不能直接更改
+//my.Point.x = 10;
+my.Point = my.Point with { x = 10 };
+#endregion
+
+#region 结构可以使用with克隆
+Console.WriteLine("结构可以使用with克隆");
+MyStruct my2 = my with { };
+Console.WriteLine(my.Age);
+my2.Age = 16;
+Console.WriteLine(my.Age);
+#endregion
+
+#region 防御性副本
+Console.WriteLine("防御性副本");
+Hello1(in my);
+Hello2(my);
+void Hello1(in MyStruct my)
+{
+	my.Show();
+	my.Show();
+	my.Show();
+}
+void Hello2(MyStruct my)
+{
+	my.Show();
+	my.Show();
+	my.Show();
+}
+#endregion
+
+
+#region 结构
+
+struct MyStruct(int age)
+{
+	public int Age = age;
+
+	public (int x, int y) Point { get; set; }
+
+	public void Show()
+	{
+		Console.WriteLine(Age++);
+	}
+}
+#endregion
+
+#region 只读结构 
+readonly struct HisStruct
+{
+	readonly int age;
+	public HisStruct(int age, string name) : this()//自定义构造器必须经过无参构造器
+	{
+		this.age = age;
+		Name = name;
+	}
+
+	public int Age { get => age; readonly set { } }
+
+	public readonly string Name { get; init; }
+	public int Id { get; }
+}
+#endregion
+#region 引用结构
+
+ref struct HerStruct(ref int age)
+{
+	public ref int Age = ref age;
+}
+#endregion
