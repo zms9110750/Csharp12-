@@ -1,0 +1,37 @@
+﻿Point point0 = new Point();
+var point1 = point0;
+var point2 = ++point0;
+var point3 = point0++;
+
+Console.WriteLine(point1 == point0);//使用自增时，这个变量会被替换掉
+Console.WriteLine(point2 == point3);//++在前取值执行后的值。++在后取值执行前的值。
+
+(int, int) p = point0;
+double d = (double)point0;
+
+record class Point
+{
+	public int X;
+	public int Y;
+
+	public static Point operator +(Point left, Point right)
+	{
+		return new Point { X = left.X + right.Y, Y = left.Y + right.Y };
+	}
+	public static Point operator *(Point left, int right)
+	{
+		return new Point { X = left.X * right, Y = left.Y * right };
+	}
+	public static Point operator ++(Point point)
+	{
+		return new Point { X = point.X + 1, Y = point.Y + 1 };
+	}
+	public static implicit operator (int x, int y)(Point point)
+	{
+		return (point.X, point.Y);
+	}
+	public static explicit operator double(Point point)
+	{
+		return Math.Sqrt(point.X * point.X + point.Y * point.Y);
+	}
+}

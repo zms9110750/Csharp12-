@@ -1,0 +1,50 @@
+﻿using static Static;
+
+#region 静态的执行顺序
+Console.WriteLine("程序开始");
+Console.WriteLine(Static.A);
+Console.WriteLine(Static.B);
+Console.WriteLine(Static.C);
+#endregion
+#region 扩展方法
+int i = 5;
+i.Hello();
+i.Hello();
+i.Hello();
+#endregion
+#region 静态引用
+Instance Instance1 = Instance0;//可以不用加类名访问到
+
+#endregion
+static class Static
+{
+	public static Instance Instance0 = new Instance();
+	public static int A = (C = 100) + 10;
+	public static int B = (A = 200) + 20;
+	public static int C = (B = 300) + 30;
+	static Static()
+	{
+		Console.WriteLine("执行静态构造器");
+	}
+	public static void Hello(ref this int i)//只有结构可以在扩展方法中设置为引用传递
+	{
+		Console.WriteLine("递增" + i++);
+	}
+}
+class Instance
+{
+	static int age;
+	public int Age;
+	static string name;
+	public string Name;
+	public Instance()
+	{
+		Console.WriteLine("执行实例构造器");
+	}
+	public void Show(int age, int Age)
+	{
+		Instance.age = age;//使用类名访问和参数同名的静态成员
+		this.Age = Age;//使用this访问和参数同名的实例成员
+		name = Name;//没有同名参数时，无论静态实例都能直接访问
+	}
+}

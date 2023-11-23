@@ -1,0 +1,57 @@
+﻿
+
+Food chicken = new Chicken(20);
+IDragon dragon = new BlackDragon();
+Match match = new Match();
+
+chicken.Bake(match);//火柴可以烘烤食物
+chicken.Bake(dragon);//龙也可以烘烤食物
+
+#region 接口
+interface IBake
+{
+	public int Firepower { get; }//接口中的属性/事件不会生成匿名字段。
+}
+interface IFly
+{
+	public int Speed { get; }
+}
+interface IDragon : IBake, IFly//接口可以继承接口
+{
+	int IFly.Speed => 10;//接口继承也可以指定基类的默认实现
+	static abstract void Show();
+}
+#endregion
+#region 实现接口的类
+class Match : IBake
+{
+	public int Firepower => 10;
+}
+
+class BlackDragon : IDragon
+{
+	public int Firepower => 300;//隐式实现
+
+	int IFly.Speed => 20;//不满默认实现时可以显式实现
+
+	public static void Show()
+	{
+		Console.WriteLine("Hello");
+	}
+}
+#endregion
+#region 使用接口的类
+abstract class Food
+{
+	public abstract int Satiety { get; protected set; }//食物可以增加饱食度
+
+	public void Bake(IBake bake)
+	{
+		Satiety += bake.Firepower;//食物经过烘烤以后可以提供更多饱食度
+	}
+}
+class Chicken(int satiety) : Food
+{
+	public override int Satiety { get; protected set; } = satiety;
+}
+#endregion

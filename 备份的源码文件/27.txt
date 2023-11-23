@@ -1,0 +1,35 @@
+﻿
+Suit suit = (Suit)2;
+Console.WriteLine(suit);
+
+
+Position position = Position.Builder | Position.Recruiter;//位枚举使用位运算复合
+if (position.HasFlag(Position.Builder))
+{
+	Console.WriteLine(position + "具有建造权限");
+}
+else
+{
+	Console.WriteLine(position + "没有建造权限");
+}
+
+
+
+enum Suit // 花色
+{
+	Spade, // 黑桃
+	Heart, // 红心
+	Diamond, // 方块
+	Club // 梅花
+}
+
+[Flags]
+enum Position : int // 职位
+{
+	None = 0,
+	Founder = 0b1, // 创始人
+	ViceLeader = 0b10, // 副首领
+	Builder = 0b100, // 建造师
+	Recruiter = 0b1000, // 招聘者
+	Researcher = 0b10000, // 研究者
+}
