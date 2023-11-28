@@ -1,0 +1,42 @@
+﻿
+
+
+using System.ComponentModel;
+using System.Reflection;
+using System.Text;
+
+Hero hero = new Hero();
+Console.WriteLine(hero);
+
+
+
+class Hero
+{
+	[Description("攻击力")]
+	public int Atk { get; set; }
+	[Description("防御力")]
+	public int Def { get; set; }
+	public int Hp { get; set; }
+
+	public override string ToString()
+	{
+		var sb = new StringBuilder();
+		var pro = GetType().GetProperties();//获取所有实例公开属性
+		foreach (var item in pro)
+		{
+			var de = item.GetCustomAttribute<DescriptionAttribute>();//获取特性
+			if (de != null)
+			{
+				sb.Append(de.Description);//若获取成功，添加特性里的描述
+			}
+			else
+			{
+				sb.Append(item.Name);//否则，获取属性名字
+			}
+			sb.Append(':');
+			sb.Append(item.GetValue(this));//用反射获取自己的属性
+			sb.Append(',');
+		}
+		return sb.ToString();
+	}
+}
