@@ -1,35 +1,37 @@
 ﻿
-Suit suit = (Suit)2;
-Console.WriteLine(suit);
+1.MoreThen(2);//可以推断类型时，不需要写泛型参数
+1.MoreThen<int, int>();//不能推断类型时需要写全泛型参数
 
 
-Position position = Position.Builder | Position.Recruiter;//位枚举使用位运算复合
-if (position.HasFlag(Position.Builder))
+interface IGetT<T>
 {
-	Console.WriteLine(position + "具有建造权限");
+	T Value { get; }
 }
-else
+interface ICreat<T>
 {
-	Console.WriteLine(position + "没有建造权限");
-}
-
-
-
-enum Suit // 花色
-{
-	Spade, // 黑桃
-	Heart, // 红心
-	Diamond, // 方块
-	Club // 梅花
+	static abstract T Creat();
 }
 
-[Flags]
-enum Position : int // 职位
+class GetInt32 : IGetT<int>//为泛型参数填写具体类型
 {
-	None = 0,
-	Founder = 0b1, // 创始人
-	ViceLeader = 0b10, // 副首领
-	Builder = 0b100, // 建造师
-	Recruiter = 0b1000, // 招聘者
-	Researcher = 0b10000, // 研究者
+	public int Value => throw new NotImplementedException();
 }
+
+class GetT<T> : IGetT<T> where T : ICreat<T> //为泛型参数填写自己的泛型
+{
+	public T Value => T.Creat();//有泛型约束时，可以使用他的方法 
+}
+
+static class SortExtend
+{
+	public static bool MoreThen<T1, T2>(this T1 left, T2 right = default!) where T1 : struct, IComparable<T2> where T2 : struct//多个泛型约束
+	{
+		return left.CompareTo(right) > 0;
+	}
+}
+
+
+
+
+
+
