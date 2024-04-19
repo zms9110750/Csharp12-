@@ -6,9 +6,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <TieredPGO>true</TieredPGO>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="API笔记\" />
-  </ItemGroup> 
+  </PropertyGroup> 
 </Project>
