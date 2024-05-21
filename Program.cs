@@ -1,14 +1,5 @@
-﻿using System;
-using System.Buffers;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq.Expressions;
-using System.Reflection;
+﻿var t1 = Task.Delay(3000);
+var t2 = t1.WaitAsync(TimeSpan.FromSeconds(1));
+await t2;
+Console.WriteLine(t2.Status);
 
-
-
-
-Fight Fight = new Fight() { Atk = 20, Hp = 50 };
-Console.WriteLine(Fight.ToString());
-
- 
