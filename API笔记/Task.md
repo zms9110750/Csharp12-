@@ -6,12 +6,12 @@
 
 以下静态方法/属性可以创建一个已经完成的任务，并设置输出为值/异常/取消。
 
-- Task.FromException<T>()
-- Task.FromException()
-- Task.FromCanceled<T>()
-- Task.FromCanceled()
-- Task.FromResult<T>()
-- Task.CompletedTask
+- `Task.FromException<T>()`
+- `Task.FromException()`
+- `Task.FromCanceled<T>()`
+- `Task.FromCanceled()`
+- `Task.FromResult<T>()`
+- `Task.CompletedTask`
 
 ### 创建延续任务
 
@@ -48,8 +48,8 @@ Task<Task<int>>? task4 = Task.WhenAny(task1, task2);
 
 `Task`的状态可以访问`Status`属性查看。这是一个枚举，有以下值：
 
-- `Created`:已经创建
-- `WaitingForActivation`:激活但等待进入计划队列
+- `Created`:已经创建。用构造器创建的就在这个阶段。
+- `WaitingForActivation`:激活但等待进入计划队列。用构造器创建并调用`Start`方法的在这个阶段。
 - `WaitingToRun`:在计划队列中等待执行
 - `Running`:运行中
 - `WaitingForChildrenToComplete`:等待附加任务完成
@@ -139,9 +139,9 @@ async Task Hello(CancellationToken token = default)
 取消令牌保存着创建自己的令牌源。从`default`而来的令牌这项值为`null`。
 取消令牌的`CanBeCanceled`属性用于判断自己的源是不是`null`（是不是从`default`来的）.
 
-取消令牌源的构造器中可以添加一个时间，一定时间后取消。
-取消方法也可以加一个时间表示一定时间后取消。
-取消令牌源有一个静态方法，可以观察一个或多个取消令牌。当任一令牌取消时，自己也取消。
+- 取消令牌源的构造器中可以添加一个时间，一定时间后取消。
+- 取消方法也可以加一个时间表示一定时间后取消。
+- 取消令牌源有一个静态方法，可以观察一个或多个取消令牌。当任一令牌取消时，自己也取消。
 
 ```csharp
 CancellationTokenSource source = new CancellationTokenSource(TimeSpan.FromSeconds(3));
