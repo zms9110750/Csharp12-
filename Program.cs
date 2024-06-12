@@ -1,61 +1,125 @@
-﻿
-using Newtonsoft.Json.Linq;
-using System.Diagnostics;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
-using System.Xml.XPath;
-
-string s = """
-<?xml version="1.0" encoding="UTF-8"?>
-<person>
-    <name>John Doe</name>
-    <age>30</age>
-    <email>john.doe@example.com</email>
-    <phoneNumbers>
-        <phoneNumber type="home">212-555-1234</phoneNumber>
-        <phoneNumber type="work">646-555-4567</phoneNumber>
-    </phoneNumbers>
-</person>
-""";
-
-var p=P.DeSerialize<person>(s);
-
-
-
-
-
-
-public class person
+﻿public class SynchronizedCache
 {
-	public string name { get; set; }
-	public int age { get; set; }
-	public string email { get; set; }
-	public string[] phoneNumbers { get; set; }
-}
-class P
-{
-	public static string Serialize<T>(T value)
+	private ReaderWriterLockSlim cacheLock = new ReaderWriterLockSlim();
+	private Dictionary<int, string> innerCache = new Dictionary<int, string>();
+
+	public int Count
+	{ get { return innerCache.Count; } }
+
+	public string Read(int key)
 	{
-		XmlSerializer xml = new XmlSerializer(typeof(T));
-		StringWriter sw = new StringWriter();
-		xml.Serialize(sw, value);
-		return sw.ToString();
+		cacheLock.EnterReadLock();
+		try
+		{
+			return innerCache[key];
+		}
+		finally
+		{
+			cacheLock.ExitReadLock();
+		}
 	}
-	/// <summary>将对象序列化为xml节点</summary>
-	public static XElement Serialize(object value)
+
+	public void Add(int key, string value)
 	{
-		XmlSerializer xml = new XmlSerializer(value.GetType());
-		using MemoryStream ms = new MemoryStream();
-		xml.Serialize(ms, value);
-		ms.Position = 0;
-		return XElement.Load(ms);
+		cacheLock.EnterWriteLock();
+		try
+		{
+			innerCache.Add(key, value);
+		}
+		finally
+		{
+			cacheLock.ExitWriteLock();
+		}
 	}
-	/// <summary>将xml字符串反序列化</summary>
-	public static T? DeSerialize<T>(string value)
+
+	public bool AddWithTimeout(int key, string value, int timeout)
 	{
-		XmlSerializer xml = new XmlSerializer(typeof(T));
-		StringReader sr = new StringReader(value);
-		return (T?)xml.Deserialize(sr);
+		if (cacheLock.TryEnterWriteLock(timeout))
+		{
+			try
+			{
+				innerCache.Add(key, value);
+			}
+			finally
+			{
+				cacheLock.ExitWriteLock();
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public AddOrUpdateStatus AddOrUpdate(int key, string value)
+	{
+		cacheLock.EnterUpgradeableReadLock();
+		try
+		{
+			if (innerCache.TryGetValue(key, out string result))
+			{
+				if (result == value)
+				{
+					return AddOrUpdateStatus.Unchanged;
+				}
+				else
+				{
+					cacheLock.EnterWriteLock();
+					try
+					{
+						innerCache[key] = value;
+					}
+					finally
+					{
+						cacheLock.ExitWriteLock();
+					}
+					return AddOrUpdateStatus.Updated;
+				}
+			}
+			else
+			{
+				cacheLock.EnterWriteLock();
+				try
+				{
+					innerCache.Add(key, value);
+				}
+				finally
+				{
+					cacheLock.ExitWriteLock();
+				}
+				return AddOrUpdateStatus.Added;
+			}
+		}
+		finally
+		{
+			cacheLock.ExitUpgradeableReadLock();
+		}
+	}
+
+	public void Delete(int key)
+	{
+		cacheLock.EnterWriteLock();
+		try
+		{
+			innerCache.Remove(key);
+		}
+		finally
+		{
+			cacheLock.ExitWriteLock();
+		}
+	}
+
+	public enum AddOrUpdateStatus
+	{
+		Added,
+		Updated,
+		Unchanged
+	};
+
+	~SynchronizedCache()
+	{
+		if (cacheLock != null)
+			cacheLock.Dispose();
 	}
 }
