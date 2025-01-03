@@ -1,19 +1,9 @@
 ﻿
+using System.Runtime.CompilerServices;
 
- 
-foreach (var item in new Test())
-{
-	Console.WriteLine("在foreach循环中输出"+item);
-}
+string[] s = new string[2];
 
-class Test
-{
-	public IEnumerator<int> GetEnumerator()
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			Console.WriteLine("在迭代器方法里输出" + i);
-			yield return i;
-		}
-	}
-}
+object[] o = s;
+
+
+
